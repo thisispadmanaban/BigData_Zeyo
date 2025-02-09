@@ -85,3 +85,7 @@ print (mulrdd.collect())
 print ("#####  Subtract RDD with lambda ######")
 subrdd = rddin.map(lambda x : x-10)
 print (subrdd.collect())
+
+print(" ##### FILTER OPERATION ######")
+filrdd = rddin.filter(lambda x: x > 2 )
+print (filrdd.collect())
