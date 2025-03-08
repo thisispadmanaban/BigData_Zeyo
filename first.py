@@ -51,7 +51,7 @@ spark.read.format("csv").load("data/test.txt").toDF("Success").show(20, False)
 
 
 #---------------------------- DONT TOUCH ABOVE CODE---------------------
-
+'''
 print("===================STARTED====================")
 a = 2
 print(a)
@@ -89,3 +89,477 @@ print (subrdd.collect())
 print(" ##### FILTER OPERATION ######")
 filrdd = rddin.filter(lambda x: x > 2 )
 print (filrdd.collect())
+
+listr = [ "zeyobron" , "zeyo" , "byte" ]
+print()
+print("=======RAW LIST======")
+print (listr)
+
+
+rddstr = sc.parallelize(listr)
+print()
+print("======= RDD LIST=======")
+print(rddstr.collect())
+
+
+conrdd = rddstr.map(lambda  x  :  x + "Analytics")
+print()
+print("======= conrdd LIST=======")
+print(conrdd.collect())
+
+filrdd = rddstr.filter(  lambda x : "zeyo" in  x.lower())
+print()
+print("======= filrdd LIST=======")
+print(filrdd.collect())
+
+reprdd =    rddstr.map( lambda x :  x.replace("zeyo","tera"))
+print()
+print("======= reprdd LIST=======")
+print(reprdd.collect())
+
+listr = [   "A~B"    ,    "C~D"    , "E~F" ]
+print()
+print("===== RAW LIST======")
+print(listr)
+
+
+
+rddstr = sc.parallelize(listr)
+print()
+print("===== RDD LIST======")
+print(rddstr.collect())
+
+
+
+flatdata = rddstr.flatMap( lambda x : x.split("~"))
+print()
+print("===== flatdata LIST======")
+print(flatdata.collect())
+
+print ("############ STATE TASK ############")
+
+listate = [
+    "State->TN~City->Chennai" ,
+    "State->Kerala~City->Trivandrum"
+]
+
+print()
+print("===== RAW LIST======")
+print(listate)
+
+
+rddstate = sc.parallelize(listate)
+print()
+print("===== rddstate LIST======")
+print(rddstate.collect())
+
+
+flatdata = rddstate.flatMap( lambda x : x.split("~"))
+print()
+print("===== flatdata LIST======")
+print(flatdata.collect())
+
+
+
+filstate = flatdata.filter( lambda x : 'State' in x)
+print()
+print("===== filstate LIST======")
+print(filstate.collect())
+
+
+states = filstate.map(lambda x : x.replace( "State->", ""  ))
+print()
+print("===== states LIST======")
+print(states.collect())
+
+
+filcity =  flatdata.filter( lambda x : 'City' in x)
+print()
+print("===== filcity LIST======")
+print(filcity.collect())
+
+
+cities = filcity.map(lambda x : x.replace("City->" , ""))
+print()
+print("===== cities LIST======")
+print(cities.collect())
+
+
+#  full rdd operations
+
+print("=====STARTED======")
+
+a = 2
+print(a)
+
+
+b = a + 2
+print(b)
+
+
+c = "zeyobron"
+print(c)
+
+
+d = c + "Analytics"
+print(d)
+
+
+lisin = [1, 2, 3, 4]
+print()
+print("===== RAW LIST=====")
+print(lisin)
+
+
+rddin = sc.parallelize(lisin)
+print()
+print("===== rddin LIST=====")
+print(rddin.collect())
+
+
+addin = rddin.map(lambda x: x + 2)
+print()
+print("===== addin LIST=====")
+print(addin.collect())
+
+
+filin = rddin.filter(lambda x: x > 2)
+print()
+print("===== filin LIST=====")
+print(filin.collect())
+
+
+listr = ["zeyobron", "zeyo", "byte"]
+print()
+print("===== RAW LIST=====")
+print(listr)
+
+
+rddstr = sc.parallelize(listr)
+print()
+print("===== rddstr LIST=====")
+print(rddstr.collect())
+
+
+conrdd = rddstr.map(lambda x: x + "Analytics")
+print()
+print("===== conrdd LIST=====")
+print(conrdd.collect())
+
+
+reprdd = rddstr.map(lambda x: x.replace("zeyo", "tera"))
+print()
+print("===== reprdd LIST=====")
+print(reprdd.collect())
+
+
+listrf = ["A~B", "C~D", "E~F"]
+print()
+print("===== listrf LIST=====")
+print(listrf)
+
+
+flatrdd = sc.parallelize(listrf)
+
+
+flatdata = flatrdd.flatMap(lambda x: x.split("~"))
+print()
+print("===== flatdata LIST=====")
+print(flatdata.collect())
+
+# 🔴 STEP 1 -- READ THE FILE
+
+data = sc.textFile("dt.txt")
+print()
+print("===== RAW DATA====")
+data.foreach(print)
+
+
+# 🔴STEP 2 ----- SPLIT WITH COMMA (MAPSPLIT)
+
+mapsplit = data.map(lambda x : x.split(","))
+
+
+from collections import namedtuple
+
+# 🔴STEP 3 ---- DEFINE COLUMNS
+
+
+columns = namedtuple('columns',['tno','tdate','amount','category','product','mode'])
+
+
+# 🔴STEP 4 --- IMPOSE EACH DATA SPLIT TO THE COLUMNS
+
+
+schemardd = mapsplit.map(lambda x : columns(x[0],x[1],x[2],x[3],x[4],x[5]))
+
+
+
+# 🔴STEP 5 ---- FILTER  REQUIRED PRODUCT COLUMN
+
+filterrdd = schemardd.filter(lambda x : 'Gymnastics' in x.product)
+print()
+print("===== filter rdd DATA====")
+filterrdd.foreach(print)
+
+listr = [ "hadoop~spark~hive~sqoop" ]
+rddstr = sc.parallelize(listr)
+print(rddstr.collect())
+
+flatlistr = rddstr.flatMap(lambda x: x.split("~"))
+print(flatlistr.collect())
+
+fil = flatlistr.map(lambda x:x.upper())
+condata = fil.map(lambda x: "Tech->" + x + " Trainer->Sai" )
+condata.foreach(print)
+
+
+#🔴 SQL PRE REQUISITE CODE
+
+data = [
+    (0, "06-26-2011", 300.4, "Exercise", "GymnasticsPro", "cash"),
+    (1, "05-26-2011", 200.0, "Exercise Band", "Weightlifting", "credit"),
+    (2, "06-01-2011", 300.4, "Exercise", "Gymnastics Pro", "cash"),
+    (3, "06-05-2011", 100.0, "Gymnastics", "Rings", "credit"),
+    (4, "12-17-2011", 300.0, "Team Sports", "Field", "cash"),
+    (5, "02-14-2011", 200.0, "Gymnastics", None, "cash"),
+    (6, "06-05-2011", 100.0, "Exercise", "Rings", "credit"),
+    (7, "12-17-2011", 300.0, "Team Sports", "Field", "cash"),
+    (8, "02-14-2011", 200.0, "Gymnastics", None, "cash")
+]
+
+df = spark.createDataFrame(data, ["id", "tdate", "amount", "category", "product", "spendby"])
+df.show()
+
+
+
+
+
+data2 = [
+    (4, "12-17-2011", 300.0, "Team Sports", "Field", "cash"),
+    (5, "02-14-2011", 200.0, "Gymnastics", None, "cash"),
+    (6, "02-14-2011", 200.0, "Winter", None, "cash"),
+    (7, "02-14-2011", 200.0, "Winter", None, "cash")
+]
+
+df1 = spark.createDataFrame(data2, ["id", "tdate", "amount", "category", "product", "spendby"])
+df1.show()
+
+
+
+
+data4 = [
+    (1, "raj"),
+    (2, "ravi"),
+    (3, "sai"),
+    (5, "rani")
+]
+
+
+
+cust = spark.createDataFrame(data4, ["id", "name"])
+cust.show()
+
+data3 = [
+    (1, "mouse"),
+    (3, "mobile"),
+    (7, "laptop")
+]
+
+prod = spark.createDataFrame(data3, ["id", "product"])
+prod.show()
+
+
+
+#🔴  *SPARK DATA FRAME READS*
+
+
+
+
+
+csvdf = spark.read.format("csv").option("header","true").load("usdata.csv")
+
+print()
+
+print("======== CSV DF==============")
+
+print()
+
+csvdf.show()
+
+
+
+
+
+
+
+
+parquetdf =  spark.read.format("parquet").load("file5.parquet")
+
+print()
+
+print("======== parquetdf ==============")
+
+print()
+
+parquetdf.show()
+
+
+
+
+
+
+
+orcdf =   spark.read.format("orc").load("data.orc")
+
+print()
+
+print("======== orcdf ==============")
+
+print()
+
+orcdf.show()
+
+
+
+
+
+
+
+
+
+jsondf =  spark.read.format("json").load("file4.json")
+
+print()
+
+print("======== jsondf ==============")
+
+print()
+
+jsondf.show()
+
+
+
+# PROCESS
+
+
+csvdf = spark.read.format("csv").option("header","true").load("usdata.csv")
+print()
+print("======== CSV DF==============")
+print()
+csvdf.show()
+
+
+csvdf.createOrReplaceTempView("zeyo")
+
+procdf = spark.sql("select * from zeyo where state='LA'")
+procdf.show()
+
+'''
+
+data = [
+    (0, "06-26-2011", 300.4, "Exercise", "GymnasticsPro", "cash"),
+    (1, "05-26-2011", 200.0, "Exercise Band", "Weightlifting", "credit"),
+    (2, "06-01-2011", 300.4, "Exercise", "Gymnastics Pro", "cash"),
+    (3, "06-05-2011", 100.0, "Gymnastics", "Rings", "credit"),
+    (4, "12-17-2011", 300.0, "Team Sports", "Field", "cash"),
+    (5, "02-14-2011", 200.0, "Gymnastics", None, "cash"),
+    (6, "06-05-2011", 100.0, "Exercise", "Rings", "credit"),
+    (7, "12-17-2011", 300.0, "Team Sports", "Field", "cash"),
+    (8, "02-14-2011", 200.0, "Gymnastics", None, "cash")
+]
+
+df = spark.createDataFrame(data, ["id", "tdate", "amount", "category", "product", "spendby"])
+df.show()
+
+data2 = [
+    (4, "12-17-2011", 300.0, "Team Sports", "Field", "cash"),
+    (5, "02-14-2011", 200.0, "Gymnastics", None, "cash"),
+    (6, "02-14-2011", 200.0, "Winter", None, "cash"),
+    (7, "02-14-2011", 200.0, "Winter", None, "cash")
+]
+
+df1 = spark.createDataFrame(data2, ["id", "tdate", "amount", "category", "product", "spendby"])
+df1.show()
+
+
+data4 = [
+    (1, "raj"),
+    (2, "ravi"),
+    (3, "sai"),
+    (5, "rani")
+]
+
+
+cust = spark.createDataFrame(data4, ["id", "name"])
+#cust.show()
+
+data3 = [
+    (1, "mouse"),
+    (3, "mobile"),
+    (7, "laptop")
+]
+
+prod = spark.createDataFrame(data3, ["id", "product"])
+#prod.show()
+
+df.createOrReplaceTempView("df")
+# df1.createOrReplaceTempView("df1")
+# cust.createOrReplaceTempView("cust")
+# prod.createOrReplaceTempView("prod")
+
+
+# spark.sql("select id,tdate from df").show()
+
+# spark.sql("select * from df where category= \"Exercise\"").show()
+# spark.sql("select id,tdate,category,spendby from df where category = 'Exercise' and spendby = 'cash'").show()
+data = [
+    ("00000", "06-26-2011", 200, "Exercise", "GymnasticsPro", "cash"),
+    ("00001", "05-26-2011", 300, "Exercise", "Weightlifting", "credit"),
+    ("00002", "06-01-2011", 100, "Exercise", "GymnasticsPro", "cash"),
+    ("00003", "06-05-2011", 100, "Gymnastics", "Rings", "credit"),
+    ("00004", "12-17-2011", 300, "Team Sports", "Field", "paytm"),
+    ("00005", "02-14-2011", 200, "Gymnastics", None, "cash")
+]
+
+df5 = spark.createDataFrame(data, ["id", "tdate", "amount", "category", "product", "spendby"])
+df5.show()
+
+procdf = df5.selectExpr("id",
+                       "tdate",
+                       "amount+100 as amount",
+                       "upper(category) as category",
+                       "concat(product,'~zeyo') as product",
+                       "spendby",
+                        "case when spendby='cash' then 0 else 1 end as status"
+                       )
+
+procdf.show();
+
+
+data = [
+    ("00000", "06-26-2011", 200, "Exercise", "GymnasticsPro", "cash"),
+    ("00001", "05-26-2011", 300, "Exercise", "Weightlifting", "credit"),
+    ("00002", "06-01-2011", 100, "Exercise", "GymnasticsPro", "cash"),
+    ("00003", "06-05-2011", 100, "Gymnastics", "Rings", "credit"),
+    ("00004", "12-17-2011", 300, "Team Sports", "Field", "paytm"),
+    ("00005", "02-14-2011", 200, "Gymnastics", None, "cash")
+]
+
+
+print ("---------------Task1 Completion---------------")
+df6 = spark.createDataFrame(data, ["id", "tdate", "amount", "category", "product", "spendby"])
+df6.show()
+
+
+procdf = df6.selectExpr(
+    "cast(id as int)  as id",
+    "split(tdate,'-')[2] as year",
+    "amount+100 as amount",
+    "upper(category) as category",
+    "concat(product,'~zeyo') as product",
+    "spendby",
+    "case when spendby='cash' then 0 else 1 end as status"
+)
+
+procdf.show()
